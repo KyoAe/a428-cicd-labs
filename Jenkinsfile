@@ -1,3 +1,16 @@
+node {
+    stage('Checkout SCM') {
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: '/home/Documents/Proyek_Pertama_CI_CD/simple-python-pyinstaller-app']]])
+    }
+    docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+        stage ('Build') {
+            sh 'npm install'
+        }
+        stage ('Test') {
+            sh './jenkins/scripts/test.sh'
+        }
+    }
+}
 pipeline {
     agent {
         docker {
