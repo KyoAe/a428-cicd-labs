@@ -1,33 +1,13 @@
 node {
-    stage('Checkout SCM') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: '/home/Documents/Proyek_Pertama_CI_CD/simple-python-pyinstaller-app']]])
-    }
     docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+        stage('Checkout SCM') {
+            checkout([$class: 'GitSCM', branches: [[name: '*/react-app']], extensions: [], userRemoteConfigs: [[url: '/home/Downloads/a428-cicd-labs']]])
+        }
         stage ('Build') {
             sh 'npm install'
         }
         stage ('Test') {
             sh './jenkins/scripts/test.sh'
-        }
-    }
-}
-pipeline {
-    agent {
-        docker {
-            image 'node:16-buster-slim' 
-            args '-p 3000:3000' 
-        }
-    }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'npm install' 
-            }
-        }
-        stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
-            }
         }
     }
 }
